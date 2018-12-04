@@ -849,16 +849,14 @@ componentDidUpdate(prevProps) {
 #### 定义props默认值： defaultProps
 ```
 class CustomButton extends React.Component {
+
+  static defaultProps = {
+    color: 'blue'
+  };
   render() {
     return <CustomButton /> ; // props.color will be set to blue
   }
 }
-
-CustomButton.defaultProps = {
-  color: 'blue'
-};
-
-
 ```
 
 #### 设置状态：setState
