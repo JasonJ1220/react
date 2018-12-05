@@ -7,6 +7,8 @@ Welcome to the Create React App documentation!
 ```CMD
 npx create-react-app my-app
 
+rem redux
+rem npm install --save redux
 rem 安装react-redux 依赖于redux
 rem npm install --save react-redux
 rem 安装react-router-dom 依赖于react-router

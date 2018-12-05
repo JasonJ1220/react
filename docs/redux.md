@@ -174,7 +174,111 @@ function squareAll(items) {
 
 ### Actions
 Action 是把数据从应用（译者注：这里之所以不叫 view 是因为这些数据有可能是服务器响应，用户输入或其它非 view 的数据 ）传到 store 的有效载荷。它是 store 数据的唯一来源。一般来说你会通过 store.dispatch() 将 action 传到 store。
+- action
+
+```
+/*
+ * action 类型
+ */
+
+export const ADD_TODO = 'ADD_TODO';
+export const TOGGLE_TODO = 'TOGGLE_TODO'
+export const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER'
+
+/*
+ * 其它的常量
+ */
+
+export const VisibilityFilters = {
+  SHOW_ALL: 'SHOW_ALL',
+  SHOW_COMPLETED: 'SHOW_COMPLETED',
+  SHOW_ACTIVE: 'SHOW_ACTIVE'
+}
+
+/*
+ * action 创建函数
+ */
+
+export function addTodo(text) {
+  return { type: ADD_TODO, text }
+}
+
+export function toggleTodo(index) {
+  return { type: TOGGLE_TODO, index }
+}
+
+export function setVisibilityFilter(filter) {
+  return { type: SET_VISIBILITY_FILTER, filter }
+}
+```
+
+- 异步 Action
+
+```
+/**
+ * Sample Async Action namely: the thunk
+ * 要配合redux-thunk这个middleware一起使用
+ * ref: https://github.com/gaearon/redux-thunk
+ */
+export const loadMoreWorkAsync = () => dispatch => {
+  /* 1. fetch之前，可以先发个pending的action */
+  dispatch({
+    type: LOAD_MORE_WORK,
+    msg: 'pending',
+  });
+  fetch('imgs/test.json').then(resp => {
+      // console.log('[resp]', resp.status);
+    if (resp.status === 200) return resp.json();
+    throw new Error('not 200 this time'); // 美滴很
+  }).then(json => {
+    /* 2. 异步结束了，发结果action */
+    dispatch({
+      type: LOAD_MORE_WORK,
+      msg: json.name,
+    });
+  }).catch(error => {
+    /* 3. 发报错action */
+    dispatch({
+      type: LOAD_MORE_WORK,
+      msg: error,
+    });
+  });
+};
+
+```
 
 ### Reducers
+Reducers 指定了应用状态的变化如何响应 actions 并发送到 store 的，记住 actions 只是描述了有事情发生了这一事实，并没有描述应用如何更新 state。
 
+注意2个原则：
+1. 不要修改 state。 
+1. 在 default 情况下返回旧的 state。遇到未知的 action 时，一定要返回旧的 state。
+
+```
+const commonInitialState = {
+};
+
+const commonReducer = (state=commonInitialState, action) => {
+    switch (action.type) {
+        default:
+            return state;
+    }
+};
+
+export default commonReducer;
+```
 ### Store
+Store 就是把Action和Reducer联系到一起的对象。Store 有以下职责：
+
+- 维持应用的 state；
+- 提供 getState() 方法获取 state；
+- 提供 dispatch(action) 方法更新 state；
+- 通过 subscribe(listener) 注册监听器;
+- 通过 subscribe(listener) 返回的函数注销监听器。
+
+**Redux 应用只有一个单一的 store。**
+```
+import { createStore } from 'redux'
+import todoApp from './reducers'
+let store = createStore(todoApp)
+```

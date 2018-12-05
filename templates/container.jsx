@@ -7,6 +7,7 @@
  */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux'
 
 class component extends Component {
     static propTypes = {
@@ -33,4 +34,4 @@ class component extends Component {
     }
 }
 
-export default component;
+export default connect()(component);

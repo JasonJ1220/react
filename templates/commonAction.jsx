@@ -6,19 +6,24 @@
  * @update 
  */
 
-class commonAction extends Object {
-    static async() {
-        return (dispatch) => {
-            let data = null;
-            dispatch(commonAction.sync(data));
-        }
-    }
-    static sync(data) {
-        return {
-            type: "xxx",
-            data: data
-        }
-    }
-}
+export const commonAction = data => (
+// {
+//     type: 'xxx',
+//     data
+//   }
 
-export default commonAction;
+//   {
+//       static async() {
+//           return (dispatch) => {
+//               let data = null;
+//               dispatch(commonAction.sync(data));
+//           }
+//       }
+//       static sync(data) {
+//           return {
+//               type: "xxx",
+//               data: data
+//           }
+//       }
+//   }
+)
