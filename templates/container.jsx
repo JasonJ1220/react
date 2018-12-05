@@ -7,31 +7,26 @@
  */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import component from '../components'
 
-class component extends Component {
-    static propTypes = {
-
-    };
-
-    static defaultProps = {
-
-    };
-
-    componentDidMount() {
-
-    }
-
-    componentWillUnmount(){
-
-    }
-
-    render() {
-        return (
-            <div>
-            </div>
-        );
-    }
+const mapStateToProps = (state) => {
+  return {
+    data: state.data
+  }
 }
 
-export default connect()(component);
+const mapDispatchToProps = (dispatch,ownProps) => {
+  return {
+    onClick: () => {
+      dispatch({
+        type: 'xxxx',
+        data: ownProps
+      });
+    }
+  };
+
+export default connect(  
+    mapStateToProps,
+    mapDispatchToProps
+)(component);
