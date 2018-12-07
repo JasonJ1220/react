@@ -15,6 +15,10 @@ rem 安装react-router-dom 依赖于react-router
 rem npm install --save react-router-dom
 rem bootstrap
 rem npm install --save reactstrap
+rem immutable
+rem npm install --save immutable
+rem redux-immutable
+rem npm install --save redux-immutable
 
 cd my-app
 

@@ -9,19 +9,18 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 
 class component extends Component {
-    static propTypes = {
-
-    };
-
-    static defaultProps = {
-
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            test: true
+        };
+    }
 
     componentDidMount() {
 
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
 
     }
 
@@ -32,5 +31,14 @@ class component extends Component {
         );
     }
 }
+
+component.propTypes = {
+    optionalString: PropTypes.string,
+};
+
+// Specifies the default values for props:
+component.defaultProps = {
+    optionalString: 'xxx'
+};
 
 export default component;
