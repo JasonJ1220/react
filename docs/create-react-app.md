@@ -7,6 +7,10 @@ Welcome to the Create React App documentation!
 ```CMD
 npx create-react-app my-app
 
+rem update npm
+rem npm install -g npm
+rem npm cache verify
+
 rem redux
 rem npm install --save redux
 rem 安装react-redux 依赖于redux
