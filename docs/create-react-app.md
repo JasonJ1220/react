@@ -17,8 +17,12 @@ rem 安装react-redux 依赖于redux
 rem npm install --save react-redux
 rem 安装react-router-dom 依赖于react-router
 rem npm install --save react-router-dom
+
 rem bootstrap
 rem npm install --save reactstrap
+rem ant-design
+rem npm install antd --save
+
 rem immutable
 rem npm install --save immutable
 rem redux-immutable
