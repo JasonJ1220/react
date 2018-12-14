@@ -27,7 +27,15 @@ npm -v
 
 
 ## 参考资料
+[ES6](http://es6.ruanyifeng.com/)
+[React](https://reactjs.org/)
+[immutable](http://facebook.github.io/immutable-js/)
+[redux-saga](https://redux-saga-in-chinese.js.org/)
 
 [CSS](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Reference)
 [LESS](http://lesscss.org/)
 [PostCSS](https://postcss.org/)
+[Animate.css](https://daneden.github.io/animate.css/?)
+
+[Webpack](https://webpack.github.io/)
+[mock](http://mockjs.com/)
