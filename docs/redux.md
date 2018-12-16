@@ -111,7 +111,6 @@ store.dispatch({
 Reducer 只是一些纯函数，它接收先前的 state 和 action，并返回新的 state。刚开始你可以只有一个 reducer，随着应用变大，你可以把它拆成多个小的 reducers，分别独立地操作 state tree 的不同部分，因为 reducer 只是函数，你可以控制它们被调用的顺序，传入附加数据，甚至编写可复用的 reducer 来处理一些通用任务，如分页器。
 
 ```
-
 function visibilityFilter(state = 'SHOW_ALL', action) {
   switch (action.type) {
     case 'SET_VISIBILITY_FILTER':
@@ -149,6 +148,7 @@ import { combineReducers, createStore } from 'redux';
 let reducer = combineReducers({ visibilityFilter, todos });
 let store = createStore(reducer);
 ```
+
 > 什么是纯函数
 > pure
 ```
@@ -173,47 +173,38 @@ function squareAll(items) {
 ```
 
 ### Actions
-Action 是把数据从应用（译者注：这里之所以不叫 view 是因为这些数据有可能是服务器响应，用户输入或其它非 view 的数据 ）传到 store 的有效载荷。它是 store 数据的唯一来源。一般来说你会通过 store.dispatch() 将 action 传到 store。
+Action 是把数据从应用传到 store 的有效载荷。它是 store 数据的唯一来源。一般来说你会通过 store.dispatch() 将 action 传到 store。
 - action
-
 ```
 /*
  * action 类型
  */
-
 export const ADD_TODO = 'ADD_TODO';
 export const TOGGLE_TODO = 'TOGGLE_TODO'
 export const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER'
-
 /*
  * 其它的常量
  */
-
 export const VisibilityFilters = {
   SHOW_ALL: 'SHOW_ALL',
   SHOW_COMPLETED: 'SHOW_COMPLETED',
   SHOW_ACTIVE: 'SHOW_ACTIVE'
 }
-
 /*
  * action 创建函数
  */
-
 export function addTodo(text) {
   return { type: ADD_TODO, text }
 }
-
 export function toggleTodo(index) {
   return { type: TOGGLE_TODO, index }
 }
-
 export function setVisibilityFilter(filter) {
   return { type: SET_VISIBILITY_FILTER, filter }
 }
 ```
 
 - 异步 Action
-
 ```
 /**
  * Sample Async Action namely: the thunk
@@ -244,7 +235,6 @@ export const loadMoreWorkAsync = () => dispatch => {
     });
   });
 };
-
 ```
 
 ### Reducers
@@ -253,23 +243,19 @@ Reducers 指定了应用状态的变化如何响应 actions 并发送到 store �
 注意2个原则：
 1. 不要修改 state。 
 1. 在 default 情况下返回旧的 state。遇到未知的 action 时，一定要返回旧的 state。
-
 ```
 const commonInitialState = {
 };
-
 const commonReducer = (state=commonInitialState, action) => {
     switch (action.type) {
         default:
             return state;
     }
 };
-
 export default commonReducer;
 ```
 ### Store
 Store 就是把Action和Reducer联系到一起的对象。Store 有以下职责：
-
 - 维持应用的 state；
 - 提供 getState() 方法获取 state；
 - 提供 dispatch(action) 方法更新 state；
