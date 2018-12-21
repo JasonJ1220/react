@@ -1,5 +1,5 @@
 # prop-types
-> 
+> https://github.com/facebook/prop-types
 
 ```
 import React from 'react';
@@ -11,7 +11,7 @@ class MyComponent extends React.Component {
   }
 }
  
-MyComponent.propTypes = {
+MyComponent.PropTypes = {
   // 基本类型
   optionalArray: PropTypes.array,
   optionalBool: PropTypes.bool,
