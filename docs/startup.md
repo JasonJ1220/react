@@ -438,7 +438,7 @@ app.model({
 ```
 ### Effect
 #### put
-用于触发 action 。
+发出一个 Action，类似于 dispatch。
 
     yield put({ type: 'todos/add', payload: 'Learn Dva' });
 
@@ -592,6 +592,8 @@ export default connect(mapStateToProps)(App);
 ```
 然后在 App 里就有了 dispatch 和 users 两个属性。
 
+
+## 
 
 
 ## 重要概念
@@ -880,29 +882,78 @@ var g = function* (){
 run(g);
 ```
 
+## 场景举例
+### 组件间通信
+- 基本代码
+```
+class Son extends React.Component {
+    render() {
+        return <input/>;
+    }
+}
+class Father extends React.Component {
+    render() {
+        return (<div>
+            <Son/>
+            <p>这里显示 Son 组件的内容</p>
+        </div>);
+    }
+}
+ReactDOM.render(<Father/>, mountNode);
+```
+- 通信代码
+```
+class Son extends React.Component {
+  render() {
+    return <input onChange={this.props.onChange}/>;
+  }
+}
+class Father extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      son: ""
+    }
+  }
+  changeHandler(e) {
+    this.setState({
+      son: e.target.value
+    });
+  }
+  render() {
+    return <div>
+      <Son onChange={this.changeHandler.bind(this)}/>
+      <p>这里显示 Son 组件的内容：{this.state.son}</p>
+    </div>;
+  }
+}
+ReactDOM.render(<Father/>, mountNode);
+```
+
+
 # 参考资料
 - **basic**
-[ES6](http://es6.ruanyifeng.com/)
-[React](https://reactjs.org/)
-[Redux](https://redux.js.org/)
-[React-Redux](https://cn.redux.js.org/docs/react-redux/)
-[react-router](https://reacttraining.com/react-router/)
-[immutable](http://facebook.github.io/immutable-js/)
-[redux-saga](https://redux-saga-in-chinese.js.org/)
-[prop-types](https://github.com/facebook/prop-types)
+[ES6](http://es6.ruanyifeng.com/) | ★★★★★
+[React](https://reactjs.org/) | ★★★★
+[Redux](https://redux.js.org/) | ★★★★
+[React-Redux](https://cn.redux.js.org/docs/react-redux/) | ★★★★
+[react-router](https://reacttraining.com/react-router/) | ★★★★
+[immutable](http://facebook.github.io/immutable-js/) | ★★★★★
+[redux-saga](https://redux-saga-in-chinese.js.org/) | ★★★★
+[prop-types](https://github.com/facebook/prop-types) | ★★★★★
 
 - **tools**
-[lodash](https://lodash.com/)
-[momentjs](http://momentjs.cn/)
+[lodash](https://lodash.com/) | ★★★★★
+[momentjs](http://momentjs.cn/) | ★★★
 - **css**
-[CSS](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Reference)
-[LESS](http://lesscss.org/)
-[PostCSS](https://postcss.org/)
-[Animate.css](https://daneden.github.io/animate.css/?)
+[CSS](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Reference) | ★★★★★
+[LESS](http://lesscss.org/) | ★★★★★
+[PostCSS](https://postcss.org/) | ★★
+[Animate.css](https://daneden.github.io/animate.css) | ★★★★
 - **deploy**
-[Webpack](https://webpack.github.io/)
+[Webpack](https://webpack.github.io/) | ★★★
 - **other**
-[mock](http://mockjs.com/)
+[mock](http://mockjs.com/)  | ★★★★
 - **extensive**
 [mostly-adequate-guide](https://github.com/MostlyAdequate/mostly-adequate-guide)
 [函数式编程](https://llh911001.gitbooks.io/mostly-adequate-guide-chinese/content/)

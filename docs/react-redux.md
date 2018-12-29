@@ -128,10 +128,7 @@ mapDispatchToProps是connect函数的第二个参数，用来建立 UI 组件的
 如果mapDispatchToProps是一个函数，会得到dispatch和ownProps（容器组件的props对象）两个参数。
 
 ```
-const mapDispatchToProps = (
-  dispatch,
-  ownProps
-) => {
+const mapDispatchToProps = (dispatch,ownProps) => {
   return {
     onClick: () => {
       dispatch({
