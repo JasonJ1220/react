@@ -2,9 +2,56 @@
 > https://redux.js.org/
 
 ## Basic
-
 Redux is a predictable state container for JavaScript apps.
+### Basic Example
+```
+import { createStore } from 'redux'
 
+/**
+ * This is a reducer, a pure function with (state, action) => state signature.
+ * It describes how an action transforms the state into the next state.
+ *
+ * The shape of the state is up to you: it can be a primitive, an array, an object,
+ * or even an Immutable.js data structure. The only important part is that you should
+ * not mutate the state object, but return a new object if the state changes.
+ *
+ * In this example, we use a `switch` statement and strings, but you can use a helper that
+ * follows a different convention (such as function maps) if it makes sense for your
+ * project.
+ */
+function counter(state = 0, action) {
+  switch (action.type) {
+    case 'INCREMENT':
+      return state + 1
+    case 'DECREMENT':
+      return state - 1
+    default:
+      return state
+  }
+}
+
+// Create a Redux store holding the state of your app.
+// Its API is { subscribe, dispatch, getState }.
+let store = createStore(counter)
+
+// You can use subscribe() to update the UI in response to state changes.
+// Normally you'd use a view binding library (e.g. React Redux) rather than subscribe() directly.
+// However it can also be handy to persist the current state in the localStorage.
+
+store.subscribe(() => console.log(store.getState()))
+
+// The only way to mutate the internal state is to dispatch an action.
+// The actions can be serialized, logged or stored and later replayed.
+store.dispatch({ type: 'INCREMENT' })
+// 1
+store.dispatch({ type: 'INCREMENT' })
+// 2
+store.dispatch({ type: 'DECREMENT' })
+// 1
+```
+
+### 核心概念
+- state
 当使用普通对象来描述应用的 state 时。例如，todo 应用的 state 可能长这样：
 ```
 {
@@ -19,16 +66,15 @@ Redux is a predictable state container for JavaScript apps.
 }
 ```
 - action
-
-要想更新 state 中的数据，你需要发起一个 action。Action 就是一个普通 JavaScript 对象（注意到没，这儿没有任何魔法？）用来描述发生了什么。下面是一些 action 的示例：
+要想更新 state 中的数据，你需要发起一个 action。Action 就是一个普通 JavaScript 对象用来描述发生了什么。下面是一些 action 的示例：
 ```
 { type: 'ADD_TODO', text: 'Go to swimming pool' }
 { type: 'TOGGLE_TODO', index: 1 }
 { type: 'SET_VISIBILITY_FILTER', filter: 'SHOW_ALL' }
 ```
-- reducer
 
-强制使用 action 来描述所有变化带来的好处是可以清晰地知道应用中到底发生了什么。如果一些东西改变了，就可以知道为什么变。action 就像是描述发生了什么的指示器。最终，为了把 action 和 state 串起来，开发一些函数，这就是 reducer。再次地，没有任何魔法，reducer 只是一个接收 state 和 action，并返回新的 state 的函数。 对于大的应用来说，不大可能仅仅只写一个这样的函数，所以我们编写很多小函数来分别管理 state 的一部分：
+- reducer
+强制使用 action 来描述所有变化带来的好处是可以清晰地知道应用中到底发生了什么。如果一些东西改变了，就可以知道为什么变。action 就像是描述发生了什么的指示器。最终，为了把 action 和 state 串起来，开发一些函数，这就是 reducer。reducer 只是一个接收 state 和 action，并返回新的 state 的函数。 对于大的应用来说，不大可能仅仅只写一个这样的函数，所以我们编写很多小函数来分别管理 state 的一部分：
 ```
 function visibilityFilter(state = 'SHOW_ALL', action) {
   if (action.type === 'SET_VISIBILITY_FILTER') {
@@ -37,7 +83,6 @@ function visibilityFilter(state = 'SHOW_ALL', action) {
     return state;
   }
 }
-
 function todos(state = [], action) {
   switch (action.type) {
   case 'ADD_TODO':
@@ -53,8 +98,8 @@ function todos(state = [], action) {
   }
 }
 ```
-- root reducer
 
+- root reducer
 再开发一个 reducer 调用这两个 reducer，进而来管理整个应用的 state：
 ```
 function todoApp(state = {}, action) {
@@ -64,7 +109,6 @@ function todoApp(state = {}, action) {
   };
 }
 ```
-这差不多就是 Redux 思想的全部。
 
 ### Three Principles
 #### 单一数据源

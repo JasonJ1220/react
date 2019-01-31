@@ -934,6 +934,8 @@ ReactDOM.render(<Father/>, mountNode);
 # 参考资料
 - **basic**
 [ES6](http://es6.ruanyifeng.com/) | ★★★★★
+
+- **react**
 [React](https://reactjs.org/) | ★★★★
 [Redux](https://redux.js.org/) | ★★★★
 [React-Redux](https://cn.redux.js.org/docs/react-redux/) | ★★★★
@@ -955,5 +957,5 @@ ReactDOM.render(<Father/>, mountNode);
 - **other**
 [mock](http://mockjs.com/)  | ★★★★
 - **extensive**
-[mostly-adequate-guide](https://github.com/MostlyAdequate/mostly-adequate-guide)
-[函数式编程](https://llh911001.gitbooks.io/mostly-adequate-guide-chinese/content/)
+[mostly-adequate-guide](https://github.com/MostlyAdequate/mostly-adequate-guide) | ★★★★
+[函数式编程](https://llh911001.gitbooks.io/mostly-adequate-guide-chinese/content/) | ★★★★
