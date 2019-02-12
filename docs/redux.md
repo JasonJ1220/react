@@ -4,6 +4,7 @@
 ## Basic
 Redux is a predictable state container for JavaScript apps.
 ### Basic Example
+应用中所有的 state 都以一个对象树的形式储存在一个单一的 store 中。 惟一改变 state 的办法是触发 action，一个描述发生什么的对象。 为了描述 action 如何改变 state 树，你需要编写 reducers。
 ```
 import { createStore } from 'redux'
 
@@ -49,10 +50,17 @@ store.dispatch({ type: 'INCREMENT' })
 store.dispatch({ type: 'DECREMENT' })
 // 1
 ```
+你应该把要做的修改变成一个普通对象，这个对象被叫做 action，而不是直接修改 state。然后编写专门的函数来决定每个 action 如何改变应用的 state，这个函数被叫做 reducer。
+
+### Motivation
+随着 JavaScript 单页应用开发日趋复杂，JavaScript 需要管理比任何时候都要多的 state （状态）。state 在什么时候，由于什么原因，如何变化已然不受控制。 当系统变得错综复杂的时候，想重现问题或者添加新功能就会变得举步维艰。
+
+这里的复杂性很大程度上来自于：我们总是将两个难以理清的概念混淆在一起：变化和异步。 如果把二者分开，能做的很好，但混到一起，就变得一团糟。一些库如 React 试图在视图层禁止异步和直接操作 DOM 来解决这个问题。美中不足的是，React 依旧把处理 state 中数据的问题留给了你。Redux就是为了帮你解决这个问题。
+
 
 ### 核心概念
 - state
-当使用普通对象来描述应用的 state 时。例如，todo 应用的 state 可能长这样：
+当使用普通对象来描述应用的 `state` 时。例如，todo 应用的 `state` 可能长这样：
 ```
 {
   todos: [{
@@ -66,7 +74,7 @@ store.dispatch({ type: 'DECREMENT' })
 }
 ```
 - action
-要想更新 state 中的数据，你需要发起一个 action。Action 就是一个普通 JavaScript 对象用来描述发生了什么。下面是一些 action 的示例：
+要想更新 state 中的数据，你需要发起一个 `action`。`action` 就是一个普通 JavaScript 对象用来描述发生了什么。下面是一些 `Action` 的示例：
 ```
 { type: 'ADD_TODO', text: 'Go to swimming pool' }
 { type: 'TOGGLE_TODO', index: 1 }
@@ -74,7 +82,7 @@ store.dispatch({ type: 'DECREMENT' })
 ```
 
 - reducer
-强制使用 action 来描述所有变化带来的好处是可以清晰地知道应用中到底发生了什么。如果一些东西改变了，就可以知道为什么变。action 就像是描述发生了什么的指示器。最终，为了把 action 和 state 串起来，开发一些函数，这就是 reducer。reducer 只是一个接收 state 和 action，并返回新的 state 的函数。 对于大的应用来说，不大可能仅仅只写一个这样的函数，所以我们编写很多小函数来分别管理 state 的一部分：
+强制使用 `action` 来描述所有变化带来的好处是可以清晰地知道应用中到底发生了什么。如果一些东西改变了，就可以知道为什么变。`action` 就像是描述发生了什么的指示器。最终，为了把 `action` 和 `state` 串起来，开发一些函数，这就是 `reducer`。`reducer` 只是一个接收 `state` 和 `action`，并返回新的 `state` 的函数。 对于大的应用来说，不大可能仅仅只写一个这样的函数，所以我们编写很多小函数来分别管理 state 的一部分：
 ```
 function visibilityFilter(state = 'SHOW_ALL', action) {
   if (action.type === 'SET_VISIBILITY_FILTER') {
@@ -100,7 +108,7 @@ function todos(state = [], action) {
 ```
 
 - root reducer
-再开发一个 reducer 调用这两个 reducer，进而来管理整个应用的 state：
+再开发一个`root reducer` 调用这两个 `reducer`，进而来管理整个应用的 `state`：
 ```
 function todoApp(state = {}, action) {
   return {
@@ -112,9 +120,9 @@ function todoApp(state = {}, action) {
 
 ### Three Principles
 #### 单一数据源
-整个应用的 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 store 中。
+整个应用的 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 `store` 中。
 
-这让同构应用开发变得非常容易。来自服务端的 state 可以在无需编写更多代码的情况下被序列化并注入到客户端中。由于是单一的 state tree ，调试也变得非常容易。在开发中，你可以把应用的 state 保存在本地，从而加快开发速度。此外，受益于单一的 state tree ，以前难以实现的如“撤销/重做”这类功能也变得轻而易举。
+这让同构应用开发变得非常容易。来自服务端的 state 可以在无需编写更多代码的情况下被序列化并注入到客户端中。由于是单一的 state tree ，调试也变得非常容易。在开发中，你可以把应用的 `state` 保存在本地，从而加快开发速度。此外，受益于单一的 state tree ，以前难以实现的如“撤销/重做”这类功能也变得轻而易举。
 ```
 console.log(store.getState())
 
@@ -150,9 +158,9 @@ store.dispatch({
 })
 ```
 #### 使用纯函数来执行修改
-为了描述 action 如何改变 state tree ，你需要编写 reducers。
+为了描述 `action` 如何改变 state tree ，你需要编写 `reducer`s。
 
-Reducer 只是一些纯函数，它接收先前的 state 和 action，并返回新的 state。刚开始你可以只有一个 reducer，随着应用变大，你可以把它拆成多个小的 reducers，分别独立地操作 state tree 的不同部分，因为 reducer 只是函数，你可以控制它们被调用的顺序，传入附加数据，甚至编写可复用的 reducer 来处理一些通用任务，如分页器。
+Reducer 只是一些纯函数，它接收先前的 `state` 和 `action`，并返回新的 `state`。刚开始你可以只有一个 `reducer`，随着应用变大，你可以把它拆成多个小的 `reducer`s，分别独立地操作 state tree 的不同部分，因为 `reducer` 只是函数，你可以控制它们被调用的顺序，传入附加数据，甚至编写可复用的 `reducer` 来处理一些通用任务，如分页器。
 
 ```
 function visibilityFilter(state = 'SHOW_ALL', action) {
@@ -194,6 +202,11 @@ let store = createStore(reducer);
 ```
 
 > 什么是纯函数
+**一个函数的返回结果只依赖于它的参数，并且在执行过程里面没有副作用，我们就把这个函数叫做纯函数。**
+- 相同输入总是会返回相同的输出。
+- 不产生副作用（不修改传入参数）。
+- 不依赖于外部状态（不使用其他外部方法）。
+
 > pure
 ```
 function square(x) {
@@ -217,8 +230,9 @@ function squareAll(items) {
 ```
 
 ### Actions
-Action 是把数据从应用传到 store 的有效载荷。它是 store 数据的唯一来源。一般来说你会通过 store.dispatch() 将 action 传到 store。
+`action` 是把数据从应用传到 `store` 的有效载荷。它是 `store` 数据的唯一来源。一般来说你会通过 store.dispatch() 将 `action` 传到 `store`。
 - action
+一个约定俗成的做法是，将 action types 定义为常量字符串，另一个约定俗成的做法是通过创建函数生成 action 对象，而不是在你 dispatch 的时候内联生成它们。
 ```
 /*
  * action 类型
@@ -245,6 +259,16 @@ export function toggleTodo(index) {
 }
 export function setVisibilityFilter(filter) {
   return { type: SET_VISIBILITY_FILTER, filter }
+}
+// 用于生成 action creator 的函数 可用其他库 如redux-actions 减少样本代码
+function makeActionCreator(type, ...argNames) {
+  return function(...args) {
+    let action = { type }
+    argNames.forEach((arg, index) => {
+      action[argNames[index]] = args[index]
+    })
+    return action
+  }
 }
 ```
 

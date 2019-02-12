@@ -692,7 +692,7 @@ ReactDOM.render(
 ### Forms
 HTML 表单元素与 React 中的其他 DOM 元素有所不同,因为表单元素生来就保留一些内部状态。
 在 HTML 当中，像 input, textarea, 和 select 这类表单元素会维持自身状态，并根据用户输入进行更新。但在React中，可变的状态通常保存在组件的状态属性中，并且只能用 setState() 方法进行更新。
-#### 实例
+#### 受控组件
 1. 在实例中我们设置了输入框 input 值 value = {this.state.data}。在输入框值发生变化时我们可以更新 state。我们可以使用 onChange 事件来监听 input 的变化，并修改 state。
 ```
 class HelloMessage extends React.Component {
@@ -884,18 +884,12 @@ class Reservation extends React.Component {
   }
 }
 ```
-#### 控制输入空值
-
-```
-ReactDOM.render(<input value="hi" />, mountNode);
-
-setTimeout(function() {
-  ReactDOM.render(<input value={null} />, mountNode);
-}, 1000);
-```
 
 ### 非受控组件
 在大多数情况下，推荐使用 受控组件 来实现表单。 在受控组件中，表单数据由 React 组件处理。如果让表单数据由 DOM 处理时，替代方案为使用非受控组件。
+
+有时使用受控组件可能很繁琐，因为您要为数据可能发生变化的每一种方式都编写一个事件处理程序，并通过一个组件来管理全部的状态。当您将预先存在的代码库转换为React或将React应用程序与非React库集成时，这可能变得特别烦人。在以上情况下，你或许应该看看非受控组件，这是一种表单的替代技术。
+
 要编写一个非受控组件，而非为每个状态更新编写事件处理程序，你可以 使用 ref 从 DOM 获取表单值。
 ```
 class NameForm extends React.Component {
@@ -942,8 +936,9 @@ render() {
   );
 }
 ```
+
 #### file tag
-在React中，<input type="file" /> 始终是一个不受控制的组件，因为它的值只能由用户设置，而不是以编程方式设置。
+在React中，<input type="file" /> 始终是一个非受控的组件，因为它的值只能由用户设置，而不是以编程方式设置。
 ```
 class FileInput extends React.Component {
   constructor(props) {
@@ -952,9 +947,7 @@ class FileInput extends React.Component {
   }
   handleSubmit(event) {
     event.preventDefault();
-    alert(
-      `Selected file - ${this.fileInput.files[0].name}`
-    );
+    alert(`Selected file - ${this.fileInput.files[0].name}`);
   }
 
   render() {
@@ -1353,12 +1346,12 @@ const ConnectedComment = enhance(CommentList);
 最常用的技术就是将包裹组件的名字包装在显示名字中。所以，如果你的高阶组件名字是 withSubscription，且包裹组件的显示名字是 CommentList，那么就是用 WithSubscription(CommentList)这样的显示名字：
 ```
 function withSubscription(WrappedComponent) {
-  class WithSubscription extends React.Component {/* ... */}
-  WithSubscription.displayName = `WithSubscription(${getDisplayName(WrappedComponent)})`;
-  return WithSubscription;
+    class WithSubscription extends React.Component {/* ... */}
+    WithSubscription.displayName = `WithSubscription(${getDisplayName(WrappedComponent)})`;
+    return WithSubscription;
 }
 function getDisplayName(WrappedComponent) {
-  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 ```
 
