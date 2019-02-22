@@ -1,6 +1,7 @@
 # redux-thunk
 
-引入thunk中间件的完整故事在Redux官方中文文档异步数据流。一句话总结就是：原生Redux只支持同步数据流，所以需要引入中间件(middleware) Thnuk 来支持异步数据流。
+redux-thunk是用来做异步的
+他允许你的action可以返回函数, 带有dispatch和getState两个参数, 在这个action函数里, 异步的dispatch action;
 
 ## redux-thunk 源码
 ```
