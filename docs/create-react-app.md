@@ -27,6 +27,9 @@ rem immutable
 rem npm install --save immutable
 rem redux-immutable
 rem npm install --save redux-immutable
+rem css-moduleyar
+rem npm install --save postcss-loader postcss-modules-values
+
 
 cd my-app
 
