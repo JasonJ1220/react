@@ -100,7 +100,7 @@ const add = (state, { payload: todo }) => {
   return state.concat(todo);
 };
 ```
-**对象字面量**
+**对象字面量简写**
 这是析构的反向操作，用于重新组织一个 Object 。
 ```
 const name = 'duoduo';
@@ -593,7 +593,6 @@ export default connect(mapStateToProps)(App);
 然后在 App 里就有了 dispatch 和 users 两个属性。
 
 
-## 
 
 
 ## 重要概念
