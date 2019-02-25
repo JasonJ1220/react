@@ -12,6 +12,26 @@ rem or
 
 yarn add redux-saga
 ```
+## 使用
+1. 使用createSagaMiddleware方法创建saga 的Middleware，然后在创建的redux的store时，使用applyMiddleware函数将创建的saga Middleware实例绑定到store上，最后可以调用saga Middleware的run函数来执行某个或者某些Middleware。
+1. 在saga的Middleware中，可以使用takeEvery或者takeLatest等API来监听某个action，当某个action触发后，saga可以使用call、fetch等api发起异步操作，操作完成后使用put函数触发action，同步更新state，从而完成整个State的更新。
+
+```
+import { createStore, applyMiddleware } from 'redux'
+import createSagaMiddleware from 'redux-saga'
+//测试saga
+import { helloSaga } from './sagas'
+//创建saga中间件
+const sagaMiddleware=createSagaMiddleware();
+//使用中间件
+const store = createStore(
+ reducer,
+ applyMiddleware(sagaMiddleware)
+);
+//运行saga
+sagaMiddleware.run(helloSaga);
+```
+
 
 ## API
 ### takeEvery
