@@ -371,10 +371,10 @@ class HelloMessage extends React.Component {
   }
   render() {
     var value = this.state.value;
-    return <div>
-            <button onClick={this.handleChange.bind(this)}>click me!</button>
-            <h4>{value}</h4>
-           </div>;
+    return (<div>
+                <button onClick={this.handleChange.bind(this)}>click me!</button>
+                <h4>{value}</h4>
+           </div>);
   }
 }
 ReactDOM.render(
@@ -409,7 +409,7 @@ class HelloMessage extends React.Component {
     var value = this.state.value;
     return <div>
             <Content myDataProp = {value} 
-              updateStateProp = {this.handleChange}></Content>
+              updateStateProp = {this.handleChange.bind(this)}></Content>
            </div>;
   }
 }
@@ -693,6 +693,8 @@ ReactDOM.render(
 HTML 表单元素与 React 中的其他 DOM 元素有所不同,因为表单元素生来就保留一些内部状态。
 在 HTML 当中，像 input, textarea, 和 select 这类表单元素会维持自身状态，并根据用户输入进行更新。但在React中，可变的状态通常保存在组件的状态属性中，并且只能用 setState() 方法进行更新。
 #### 受控组件
+值由React控制的输入表单元素称为“受控组件”。使用”受控组件”,每个状态的改变都有一个与之相关的处理函数。这样就可以直接修改或验证用户输入。
+
 1. 在实例中我们设置了输入框 input 值 value = {this.state.data}。在输入框值发生变化时我们可以更新 state。我们可以使用 onChange 事件来监听 input 的变化，并修改 state。
 ```
 class HelloMessage extends React.Component {
@@ -719,7 +721,7 @@ ReactDOM.render(
 );
 ```
 
-1. 以下实例演示如何在子组件上使用表单。 onChange 方法将触发 state 的更新并将更新的值传递到子组件的输入框的 value 上来重新渲染界面。需要在父组件通过创建事件句柄 (handleChange) ，并作为 prop (updateStateProp) 传递到子组件上。
+2. 以下实例演示如何在子组件上使用表单。 onChange 方法将触发 state 的更新并将更新的值传递到子组件的输入框的 value 上来重新渲染界面。需要在父组件通过创建事件句柄 (handleChange) ，并作为 prop (updateStateProp) 传递到子组件上。
 ```
 class Content extends React.Component {
   render() {
@@ -835,7 +837,7 @@ class EssayForm extends React.Component {
 
 ```
 
-#### 多个表单
+#### 多个表单Input
 当你有处理多个 input 元素时，你可以通过给每个元素添加一个 name 属性，来让处理函数根据 event.target.name 的值来选择做什么。
 ```
 class Reservation extends React.Component {
@@ -916,6 +918,7 @@ class NameForm extends React.Component {
   }
 }
 ```
+
 由于非受控组件将真实数据保存在 DOM 中，因此在使用非受控组件时，更容易同时集成 React 和非 React 代码。如果你想快速而随性，这样做可以减小代码量。否则，你应该使用受控组件。
 
 #### 默认值
@@ -1073,7 +1076,7 @@ class Parent extends React.Component {
     this.textInput = React.createRef();
   }
   render() {
-    // 这将 *不会* 工作！
+    // 这 * 将 *不 * 会 * 工 * 作！
     return (
       <MyFunctionalComponent ref={this.textInput} />
     );
@@ -1209,7 +1212,7 @@ CommentList 和 BlogPost 组件并不相同————他们调用了 DataSourc
 - 在监听器内， 每当数据源发生改变，调用setState。
 - 卸载组件时， 移除改变监听器。
 
-设想一下，在一个大型的应用中，这种从 DataSource 订阅数据并调用 setState 的模式将会一次又一次的发生。我**们就可以抽象出一个模式，该模式允许我们在一个地方定义逻辑并且许多组件都能共享，这就是高阶组件的精华所在**。
+设想一下，在一个大型的应用中，这种从 DataSource 订阅数据并调用 setState 的模式将会一次又一次的发生。**我们就可以抽象出一个模式，该模式允许我们在一个地方定义逻辑并且许多组件都能共享，这就是高阶组件的精华所在**。
 
 写一个函数，该函数能够创建类似 CommonList 和 BlogPost 从 DataSource 数据源订阅数据的组件 。该函数接受一个子组件作为其中的一个参数，并从数据源订阅数据作为props属性传入子组件。把这个函数取个名字 withSubscription：
 ```
@@ -1317,7 +1320,7 @@ render() {
 }
 ```
 
-1. 约定：最大化使用组合
+2. 约定：最大化使用组合
 并不是所有的高阶组件看起来都是一样的。有时，它们仅仅接收一个参数，即包裹组件：
 ```
 const NavbarWithRouter = withRouter(Navbar);
@@ -1341,7 +1344,7 @@ const ConnectedComment = enhance(CommentList);
 ```
 换句话说，**connect 是一个返回高阶组件的高阶函数！**
 
-1. 约定：包装显示名字以便于调试
+3. 约定：包装显示名字以便于调试
 为了便于调试，可以选择一个好的名字，确保能够识别出它是由高阶组件创建的新组件还是普通的组件。
 最常用的技术就是将包裹组件的名字包装在显示名字中。所以，如果你的高阶组件名字是 withSubscription，且包裹组件的显示名字是 CommentList，那么就是用 WithSubscription(CommentList)这样的显示名字：
 ```
