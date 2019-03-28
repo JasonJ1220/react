@@ -208,7 +208,7 @@ ReactDOM.render(
 ```
 
 ### State
-React 把组件看成是一个状态机（State Machines）。通过与用户的交互，实现不同状态，然后渲染 UI，让用户界面和数据保持一致。
+React 把组件看成是一个状态机（State Machines）。通过与用户的交互，实现不同状态，然后渲染 UI，让用户界面和数据保持一致。**State是一个只对类可用的特性。**
 React 里，只需更新组件的 state，然后根据新的 state 重新渲染用户界面（不要操作 DOM）。
 以下实例创建一个名称扩展为 React.Component 的 ES6 类，在 render() 方法中使用 this.state 来修改当前的时间。
 添加一个类构造函数来初始化状态 this.state，类组件应始终使用 props 调用基础构造函数。
@@ -251,6 +251,7 @@ ReactDOM.render(
   document.getElementById('example')
 );
 ```
+
 ### Lifecycle
 组件的生命周期可分成三个状态：
 - Mounting：已插入真实 DOM
@@ -276,11 +277,17 @@ this.setState({comment: 'Hello'});
 ```
 
 - State Updates May Be Asynchronous
+React可以将多个setState()调用批量处理为单个更新，以提高性能。
+因为props和state可以异步更新，不不应该依赖它们的值来计算下一个状态。
+例如，此代码可能无法更新计数器:
 ```
 // Wrong
 this.setState({
   counter: this.state.counter + this.props.increment,
 });
+```
+请使用setState()的第二种形式，它接受函数而不是对象。该函数将state作为第一个参数，更新时props作为第二个参数:
+```
 // Correct
 this.setState((state, props) => ({
   counter: state.counter + props.increment
@@ -743,10 +750,10 @@ class Father extends React.Component {
   }
   render() {
     var value = this.state.value;
-    return <div>
+    return (<div>
             <Content contentProp = {value} 
               updateStateProp = {this.handleChange}></Content>
-           </div>;
+           </div>);
   }
 }
 ReactDOM.render(
@@ -762,7 +769,6 @@ class FlavorForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {value: 'coconut'};
- 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -941,7 +947,7 @@ render() {
 ```
 
 #### file tag
-在React中，<input type="file" /> 始终是一个非受控的组件，因为它的值只能由用户设置，而不是以编程方式设置。
+在React中，`<input type="file" />` 始终是一个非受控的组件，因为它的值只能由用户设置，而不是以编程方式设置。
 ```
 class FileInput extends React.Component {
   constructor(props) {
@@ -963,9 +969,7 @@ class FileInput extends React.Component {
             ref={input => {
               this.fileInput = input;
             }}
-
           />
-
         </label>
         <br />
         <button type="submit">Submit</button>
