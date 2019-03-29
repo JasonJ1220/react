@@ -13,11 +13,11 @@ rem npm install -g npm
 rem npm cache verify
 
 rem redux
-rem npm install --save redux
+rem yarn add redux
 rem 安装react-redux 依赖于redux
-rem npm install --save react-redux
+rem yarn add react-redux
 rem 安装react-router-dom 依赖于react-router
-rem npm install --save react-router-dom
+rem yarn add react-router-dom
 
 rem ant-design
 rem npm install antd --save

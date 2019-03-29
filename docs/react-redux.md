@@ -1,6 +1,9 @@
 # react-redux
 > https://react-redux.js.org
 
+Example
+> https://codesandbox.io/s/9on71rvnyo
+
 ## Provider
 Provider makes the Redux store available to the rest of project:
 ```
