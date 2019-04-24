@@ -24,8 +24,11 @@ MyComponent.PropTypes = {
   // 任何可以渲染的东西：数字，字符串，元素或数组（或片段）。
   optionalNode: PropTypes.node,
  
-  // React元素
+  // React元素　(ie. `<MyComponent />`)
   optionalElement: PropTypes.element,
+
+  // React 元素类型 (ie. MyComponent).
+  optionalElementType: PropTypes.elementType,
 
   // 也可以声明prop是某个类的实例。 内部使用的是JS的instanceof运算符。.
   optionalMessage: PropTypes.instanceOf(Message),

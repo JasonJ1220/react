@@ -14,5 +14,6 @@ my react's practices,stuty resources and collections.
 
 - 相关资源库
 
-1. [immutable](docs/immutable)
-2. [prop-types](docs/prop-types)
+1. [immutable](docs/immutable.md)
+2. [prop-types](docs/prop-types.md)
+3. [JSX-Control-Statements](docs/JSX Control Statements.md)
