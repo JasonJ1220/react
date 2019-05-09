@@ -17,3 +17,4 @@ my react's practices,stuty resources and collections.
 1. [immutable](docs/immutable.md)
 2. [prop-types](docs/prop-types.md)
 3. [JSX Control Statements](docs/JSX-Control-Statements.md)
+4. [classnames](docs/classnames.md)
