@@ -40,6 +40,10 @@ Redux is a predictable state container for JavaScript apps.
 - 参考资料
 
 ## overview
+Redux 的设计思想很简单。
+（1）Web 应用是一个 state container，view 与 state 是一一对应的。
+（2）所有的 state，保存在一个对象 (store) 里面。
+
 ### Basic Example
 ```
 import { createStore } from 'redux'
@@ -194,3 +198,5 @@ Redux 中间件（Middleware）
 ## 参考资料
 - https://slides.com/jenyaterpil/redux-from-twitter-hype-to-production#/
 - https://redux.js.org/
+- https://css-tricks.com/learning-react-redux/
+- https://github.com/supnate/react-geek-time
