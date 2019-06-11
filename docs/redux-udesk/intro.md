@@ -112,11 +112,55 @@ class Counter extends Component {
 
 ### Prior Art
 #### flux
+Redux 的灵感来源于 Flux 的几个重要特性。和 Flux 一样，Redux 规定，将模型的更新逻辑全部集中于一个特定的层（Flux 里的 store，Redux 里的 reducer）。Flux 和 Redux 都不允许程序直接修改数据，而是用一个叫作 “action” 的普通对象来对更改进行描述。
+
+不同点:
+1. Redux 并没有 dispatcher 的概念。
+2. Redux 设想你永远不会变动你的数据。
+
+redux吸收了flux的所有优点（记录并且重新执行action，单向的数据流，依赖变动）并且也加入了些新的（简易的undo-redo,hot-reloading）不需要引入新的dispatcher和store注册。 
 
 #### Context API
-1. Context API 的使用方法 
+1. 使用场景
+Context 设计目的是为了共享那些对于一个组件树而言是“全局”的数据，例如当前认证的用户、主题或首选语言。
+Context 主要应用场景在于很多不同层级的组件需要访问同样一些的数据。请谨慎使用，因为这会使得组件的复用性变差。
+2. Context API 的使用方法 
+```
+const ThemeContext = React.createContext('light');
 
-2. 使用场景
+class App extends React.Component {
+  render() {
+    return (
+      <ThemeContext.Provider value="dark">
+        <Middle />
+      </ThemeContext.Provider>
+    );
+  }
+}
+
+
+function Middle(props) {
+  return (
+    <div>
+      <Children />
+    </div>
+  );
+}
+
+class Children extends React.Component {
+  static contextType = ThemeContext;
+  render() {
+    return <Button theme={this.context} />;
+  }
+  //or
+  //render() {
+  //  return (
+  //	<ThemeContext.Consumer>
+  //		{theme => <Button theme={theme} />}
+  //	</ThemeContext.Consumer>);
+  //}
+}
+```
 
 ### you might not need Redux
 “如果你不知道是否需要 Redux，那就是不需要它。”
@@ -124,25 +168,78 @@ Redux 的创造者 Dan Abramov 又补充了一句。
 "只有遇到 React 实在解决不了的问题，你才需要 Redux 。"
 
 ### motivation
-随着单页应用开发日趋复杂，JavaScript 需要管理比任何时候都要多的 state （状态）。 这些 state 可能包括服务器响应、缓存数据、本地生成尚未持久化到服务器的数据，也包括 UI 状态，如激活的路由，被选中的标签，是否显示加载动效或者分页器等等。
-
 state 在什么时候，由于什么原因，如何变化已然不受控制。 
 
 Redux 试图让 state 的变化变得可预测。
 
+随着单页应用开发日趋复杂，JavaScript 需要管理比任何时候都要多的 state （状态）。 这些 state 可能包括服务器响应、缓存数据、本地生成尚未持久化到服务器的数据，也包括 UI 状态，如激活的路由，被选中的标签，是否显示加载动效或者分页器等等。
 
 ### Three Principles
 #### Single Source of Truth
+单一数据源
+整个应用的 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 store 中。
 - 传统MVC 做法
 
 - Redux 做法
 
 #### predictable
+State 是只读的, 唯一改变 state 的方法就是触发 action，action 是一个用于描述已发生事件的普通对象。
 ```
 State + Action = new State
 ```
 
+```
+store.dispatch({
+  type: 'COMPLETE_TODO',
+  index: 1
+})
+
+store.dispatch({
+  type: 'SET_VISIBILITY_FILTER',
+  filter: 'SHOW_COMPLETED'
+})
+```
+
 #### Changes are made with Pure Functions
+使用纯函数来执行修改
+```
+function visibilityFilter(state = 'SHOW_ALL', action) {
+  switch (action.type) {
+    case 'SET_VISIBILITY_FILTER':
+      return action.filter
+    default:
+      return state
+  }
+}
+
+function todos(state = [], action) {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return [
+        ...state,
+        {
+          text: action.text,
+          completed: false
+        }
+      ]
+    case 'COMPLETE_TODO':
+      return state.map((todo, index) => {
+        if (index === action.index) {
+          return Object.assign({}, todo, {
+            completed: true
+          })
+        }
+        return todo
+      })
+    default:
+      return state
+  }
+}
+
+import { combineReducers, createStore } from 'redux'
+let reducer = combineReducers({ visibilityFilter, todos })
+let store = createStore(reducer)
+```
 
 ## Store\Action\Reducer
 ### Store
