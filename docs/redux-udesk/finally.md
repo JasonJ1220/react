@@ -11,7 +11,6 @@ Redux is a predictable state container for JavaScript apps.
 5. Prior Art
 6. you might not need Redux
 
-
 - Store\Action\Reducer
 1. Stroe
 2. Action
@@ -33,7 +32,7 @@ Redux is a predictable state container for JavaScript apps.
 - example
 1. pure redux (combineReducers\bindActionCreators)
 2. react-redux
-3. 
+3. async flow
 
 ## overview
 ### origin
@@ -166,7 +165,50 @@ class Counter extends Component {
 ```
 ### Prior Art
 #### Context API
+1. 使用场景
+Context 设计目的是为了共享那些对于一个组件树而言是“全局”的数据，例如当前认证的用户、主题或首选语言。
+Context 主要应用场景在于很多不同层级的组件需要访问同样一些的数据。请谨慎使用，因为这会使得组件的复用性变差。
+2. Context API 的使用方法 
+```
+const ThemeContext = React.createContext('light');
+
+class App extends React.Component {
+  render() {
+    return (
+      <ThemeContext.Provider value="dark">
+        <Middle />
+      </ThemeContext.Provider>
+    );
+  }
+}
+
+
+function Middle(props) {
+  return (
+    <div>
+      <Children />
+    </div>
+  );
+}
+
+class Children extends React.Component {
+  static contextType = ThemeContext;
+  render() {
+    return <Button theme={this.context} />;
+  }
+  //or
+  //render() {
+  //  return (
+  //	<ThemeContext.Consumer>
+  //		{theme => <Button theme={theme} />}
+  //	</ThemeContext.Consumer>);
+  //}
+}
+```
+
 #### Flux
+![](https://github.com/JasonJ1220/react/blob/master/docs/redux-udesk/images/ARCH-Classic-Flux__2_.png?raw=true)
+
 Redux 的灵感来源于 Flux 的几个重要特性。和 Flux 一样，Redux 规定，将模型的更新逻辑全部集中于一个特定的层（Flux 里的 store，Redux 里的 reducer）。Flux 和 Redux 都不允许程序直接修改数据，而是用一个叫作 “action” 的普通对象来对更改进行描述。
 
 不同点:
@@ -317,6 +359,30 @@ export default connect(
   state => ({ todos: state.todos })
 )(TodoListContainer)
 ```
+### compose
+从右到左来组合多个函数。
+
+这是函数式编程中的方法，为了方便，被放到了 Redux 里。
+当需要把多个 store 增强器 依次执行的时候，需要用到它。
+
+```
+compose(funcA, funcB, funcC) => compose(funcA(funcB(funcC())))
+```
+
+```
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
+import thunk from 'redux-thunk'
+import DevTools from './containers/DevTools'
+import reducer from '../reducers/index'
+
+const store = createStore(
+  reducer,
+  compose(
+    applyMiddleware(thunk),
+    DevTools.instrument()
+  )
+)
+```
 
 ## React-Redux
 1. 在 React 中使用 Redux
@@ -324,7 +390,7 @@ export default connect(
 component->connect->store
 ```
 2. connect 的工作原理高阶组件
-
+![](https://github.com/JasonJ1220/react/blob/master/docs/redux-udesk/images/connect.jpg?raw=true)
 ## Async Flow
 ### Async action
 异步 action 不是特殊 action
