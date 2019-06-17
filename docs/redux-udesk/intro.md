@@ -41,8 +41,8 @@ Redux is a predictable state container for JavaScript apps.
 
 ## overview
 Redux 的设计思想很简单。
-（1）Web 应用是一个 state container，view 与 state 是一一对应的。
-（2）所有的 state，保存在一个对象 (store) 里面。
+1. Web 应用是一个 state container，view 与 state 是一一对应的。
+2. 所有的 state，保存在一个对象 (store) 里面。
 
 ### Basic Example
 ```
@@ -164,19 +164,19 @@ class Children extends React.Component {
 
 ### you might not need Redux
 “如果你不知道是否需要 Redux，那就是不需要它。”
+
 Redux 的创造者 Dan Abramov 又补充了一句。
 "只有遇到 React 实在解决不了的问题，你才需要 Redux 。"
 
 ### motivation
+随着单页应用开发日趋复杂，JavaScript 需要管理比任何时候都要多的 state （状态）。 这些 state 可能包括服务器响应、缓存数据、本地生成尚未持久化到服务器的数据，也包括 UI 状态，如激活的路由，被选中的标签，是否显示加载动效或者分页器等等。
+
 state 在什么时候，由于什么原因，如何变化已然不受控制。 
 
-Redux 试图让 state 的变化变得可预测。
-
-随着单页应用开发日趋复杂，JavaScript 需要管理比任何时候都要多的 state （状态）。 这些 state 可能包括服务器响应、缓存数据、本地生成尚未持久化到服务器的数据，也包括 UI 状态，如激活的路由，被选中的标签，是否显示加载动效或者分页器等等。
+通过限制更新发生的时间和方式，Redux 试图让 state 的变化变得可预测。这些限制条件反映在 Redux 的三大原则中。
 
 ### Three Principles
 #### Single Source of Truth
-单一数据源
 整个应用的 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 store 中。
 - 传统MVC 做法
 
@@ -201,53 +201,12 @@ store.dispatch({
 ```
 
 #### Changes are made with Pure Functions
-使用纯函数来执行修改
-```
-function visibilityFilter(state = 'SHOW_ALL', action) {
-  switch (action.type) {
-    case 'SET_VISIBILITY_FILTER':
-      return action.filter
-    default:
-      return state
-  }
-}
-
-function todos(state = [], action) {
-  switch (action.type) {
-    case 'ADD_TODO':
-      return [
-        ...state,
-        {
-          text: action.text,
-          completed: false
-        }
-      ]
-    case 'COMPLETE_TODO':
-      return state.map((todo, index) => {
-        if (index === action.index) {
-          return Object.assign({}, todo, {
-            completed: true
-          })
-        }
-        return todo
-      })
-    default:
-      return state
-  }
-}
-
-import { combineReducers, createStore } from 'redux'
-let reducer = combineReducers({ visibilityFilter, todos })
-let store = createStore(reducer)
-```
+纯函数:相同的输入，永远会得到相同的输出，而且没有任何显著的副作用。
+副作用:在计算结果的过程中，系统状态的一种改变，或是外部世界可观察的交互作用。比如发送http请求等，只要与function外部环境发生交互作用的都是副作用。
 
 ## Store\Action\Reducer
-### Store
-- getState()
-- dispatch(action)
-- subscribe(listener)
-
 ### action
+Action 是把数据从应用传到 store 的有效标识。它是 store 数据的唯一来源。通过 store.dispatch() 将 action 传到 store。
 ```
 { 
     type: 'DEPOSIT',
@@ -255,6 +214,9 @@ let store = createStore(reducer)
 }
 ```
 ### reducer
+reducer 就是一个纯函数，接收旧的 state 和 action，返回新的 state。
+
+谨记 reducer 一定要保持纯净。只要传入参数相同，返回计算得到的下一个 state 就一定相同。没有特殊情况、没有副作用，没有 API 请求、没有变量修改，单纯执行计算。
 ```
 function counter(state = 0, action) {
   switch (action.type) {
@@ -268,7 +230,19 @@ function counter(state = 0, action) {
 }
 ```
 
+### Store
+Store 就是把reducers 和 action联系到一起的对象。
+
+- getState()
+- dispatch(action)
+- subscribe(listener) //(返回一个函数用来注销监听器)
+
+
 ## React-Redux
+### 在 React 中使用 Redux
+
+### connect 的工作原理-高阶组件
+
 
 ## Async Flow
 ### Async action
@@ -279,6 +253,23 @@ Redux 中间件（Middleware）
 1. 截获action
 2. 发出action
 ### Redux-Thunk
+#### generator
+```
+function* fibonacci() {
+  let [prev, curr] = [0, 1];
+  for (;;) {
+    yield curr;
+    [prev, curr] = [curr, prev + curr];
+  }
+}
+
+for (let n of fibonacci()) {
+  if (n > 1000) break;
+  console.log(n);
+}
+```
+#### generator 异步应用
+
 ### Redux-Saga
 
 ## Immutability
@@ -293,6 +284,7 @@ Redux 中间件（Middleware）
 
 
 ## 参考资料
+- https://medium.com/@dan_abramov/the-case-for-flux-379b7d1982c6
 - https://slides.com/jenyaterpil/redux-from-twitter-hype-to-production#/
 - https://redux.js.org/
 - https://css-tricks.com/learning-react-redux/
