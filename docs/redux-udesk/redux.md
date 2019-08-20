@@ -76,6 +76,9 @@ State + Action = new State
 
 #### Changes are made with Pure Functions
 使用纯函数来执行修改
+纯函数:返回结果只依赖与它的参数,在执行该函数的过程中没有副作用
+副作用:1.不能修改它的参数 2.不能执行异步操作 3.不能执行其他函数
+
 ```
 function visibilityFilter(state = 'SHOW_ALL', action) {
   switch (action.type) {
