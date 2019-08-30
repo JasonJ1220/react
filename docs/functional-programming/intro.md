@@ -43,16 +43,16 @@
 let a = function(x){ return x + 1 }
 
 // 赋值
-let res = a( 1 )
+let res = a(1)
 
 // 实参传递
-let b = function( a ) {
+let b = function(a) {
   return a(1) + 1
 }
 
 // 返回另一个函数
 let c = function(a, cb){
-  return function( c ) {
+  return function(c) {
     cb()
     return c + 2
   }
@@ -277,16 +277,182 @@ const ConnectedComment = connect(commentSelector, commentActions)(CommentList);
 参考之上
 
 ### react hook
+Hook 是什么？ Hook 是一个特殊的函数，它可以让你“钩入” React 的特性。
+
+什么时候我会用 Hook？ 如果你在编写函数组件并意识到需要向其添加一些 state，以前的做法是必须将其它转化为 class。现在你可以在现有的函数组件中使用 Hook。
+```
+import React, { useState, useEffect } from 'react';
+
+function Example() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  });
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
 
 #### State Hook
+- React 怎么知道 useState 对应的是哪个 state?
+- React 是如何把对 Hook 的调用和组件联系起来的？
+- 函数式更新
+
+使用 Hook 的示例:
+```
+import React, { useState } from 'react';
+function Example() {
+  const [count, setCount] = useState(0);
+  // 声明多个 state 变量
+  // const [age, setAge] = useState(42);
+  // const [fruit, setFruit] = useState('banana');
+  // const [todos, setTodos] = useState([{ text: '学习 Hook' }]);
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+       Click me
+     </button>
+    </div>
+  );
+}
+```
 
 #### Effect Hook
+- 使用 Hook 的示例:
+```
+import React, { useState, useEffect } from 'react';
+
+function FriendStatus(props) {
+  const [isOnline, setIsOnline] = useState(null);
+
+  useEffect(() => {
+    function handleStatusChange(status) {
+      setIsOnline(status.isOnline);
+    }
+
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    // Specify how to clean up after this effect:
+    return function cleanup() {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+
+  if (isOnline === null) {
+    return 'Loading...';
+  }
+  return isOnline ? 'Online' : 'Offline';
+}
+```
+
+- useEffect 做了什么？ 
+- 为什么在组件内部调用 useEffect？ 
+- useEffect 会在每次渲染后都执行吗？
+- 使用多个 Effect 实现关注点分离
+- effect 的执行时机
+- effect 的条件执行
+```
+useEffect(
+  () => {
+    const subscription = props.source.subscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
+  },
+  //如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（[]）作为第二个参数。这就告诉 React 你的 effect 不依赖于 props 或 state 中的任何值，所以它永远都不需要重复执行。
+  [props.source]
+);
+```
+
+#### Ref Hook
+```
+function TextInputWithFocusButton() {
+  const inputEl = useRef(null);
+  const onButtonClick = () => {
+    // `current` 指向已挂载到 DOM 上的文本输入元素
+    inputEl.current.focus();
+  };
+  return (
+    <div>
+      <input ref={inputEl} type="text" />
+      <button onClick={onButtonClick}>Focus the input</button>
+    <div/>
+  );
+}
+```
+
+#### useLayoutEffect
+其函数签名与 useEffect 相同，但它会在所有的 DOM 变更之后同步调用 effect。
+与　useEffect　区别:
+```
+import React, { useEffect, useLayoutEffect, useRef } from "react";
+
+const Animate = () => {
+    const divRel = useRef(null);
+    // useLayoutEffect　直接就是蓝色　
+    //　useEffect 则由红色变蓝色
+    useEffect(() => {
+        divRel.current.style.backgroundColor='blue';
+    }, []);
+    return (
+        <div className='animate'>
+            <div ref={divRel} style={width:'300px',height:'300px',backgroundColor:'red'}>square</div>
+        </div>
+    );
+};
+
+export default Animate;
+```
 
 #### 原则
-1. 只在最顶层使用 Hook
-2. 不要在循环，条件或嵌套函数中调用 Hook
-3. 只在 React 函数中调用 Hook
-4. 不要在普通的 JavaScript 函数中调用 Hook
+1. 只在最顶层使用 Hook(不要在循环，条件或嵌套函数中调用 Hook)
+2. 只在 React 函数中调用 Hook(不要在普通的 JavaScript 函数中调用 Hook)
+
+### 从　class 到　hook
+#### constructor
+函数组件不需要构造函数。你可以通过调用 useState 来初始化 state。如果计算的代价比较昂贵，你可以传一个函数给 useState。
+
+#### getDerivedStateFromProps
+
+#### shouldComponentUpdate
+```
+const Button = React.memo((props) => {
+  // 只它的 props 进行浅比较
+},(prevProps, nextProps)=>{
+
+});
+```
+#### render
+函数本身
+
+#### force update
+```
+const useForceUpdate = () => {
+  const forceUpdate = useState(0)[1];
+  return () => forceUpdate(x => x + 1);
+}
+```
+
+#### getSnapshotBeforeUpdate
+hook不能直接替代这个生命周期，
+
+#### componentDidMount, componentDidUpdate, componentWillUnmount
+useEffect Hook 可以表达所有这些的组合。
+
+#### componentDidCatch, getDerivedStateFromError
+目前还未实现
+
+
 
 #### demo 
 1. 使用hook 获取数据
@@ -312,7 +478,7 @@ function SearchResults() {
   }, [query]);
 
   return (
-    <>
+    <div>
       <input value={query} onChange={e => setQuery(e.target.value)} />
       <ul>
         {data.hits.map(item => (
@@ -321,15 +487,13 @@ function SearchResults() {
           </li>
         ))}
       </ul>
-    </>
+    <div/>
   );
 }
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(<SearchResults />, rootElement);
 ```
-
-
 
 ## 参考资料
 [https://github.com/MostlyAdequate/mostly-adequate-guide](https://github.com/MostlyAdequate/mostly-adequate-guide)
