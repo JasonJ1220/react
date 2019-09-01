@@ -74,7 +74,7 @@ class Flock {
   }
 
   breed(other) {
-    this.seagulls = this.seagulls * other.seagulls;
+    this.seagulls *= other.seagulls;
     return this;
   }
 }
@@ -87,7 +87,20 @@ const result = flockA
   .breed(flockB)
   .conjoin(flockA.breed(flockB))
   .seagulls;
-// 32
+```
+
+----------
+
+```
+const conjoin = (flockX, flockY) => flockX + flockY;
+const breed = (flockX, flockY) => flockX * flockY;
+
+const flockA = 4;
+const flockB = 2;
+const flockC = 0;
+const result =
+    conjoin(breed(flockB, conjoin(flockA, flockC)), breed(flockA, flockB));
+// 16
 ```
 
 ## pure-function
@@ -95,26 +108,26 @@ const result = flockA
 我举2个例子:
 - slice & splice：slice是一个纯函数，splice是非纯函数
 - add
+
 ```
 // add 的非纯函数定义
 var x = 5;
-function add( y ){ return y + x }
+function add(y){ return y + x }
 
 // 如何定义一个纯函数
-function addPure( x ){
-  return function ( y ) {
-     return y + x
+function addPure(x){
+  return function (y) {
+    return y + x;
   }
 };
 ```
 
-
 ## currying
 ```
 // 柯里化
-function addPure( x ){
-  return function ( y ) {
-     return y + x
+function addPure(x){
+  return function (y) {
+     return y + x;
   }
 }
 
@@ -123,7 +136,7 @@ var res = addTemp(1) // 6
 var res1 = addTemp(10) // 15
 
 // 非柯里化
-function addPure( x, y ){
+function addPure(x, y){
    return y + x
 }
 
@@ -136,6 +149,70 @@ const loggerMiddleware = store => next => action => {
   // do some thing.
 }
 ```
+react中的 currying :
+```
+//柯里化的组件
+class Filters extends React.Component {
+  
+  updateSelections = (selectionType) => {
+    return (newValue) => {
+      this.props.selectionsChanged({
+        ...this.props.selections,
+        [selectionType]: newValue,  // new ES6 Syntax!! :)
+      });
+    }
+  };
+
+  render() {
+    return (
+      <div>
+        <PriceFilter 
+          price={this.props.selections.price} 
+          priceChanged={this.updateSelections('price')} 
+        />
+        <AgeFilter 
+          ages={this.props.selections.ages} 
+          agesChanged={this.updateSelections('ages')} 
+        />
+        <BrandFilter 
+          brands={this.props.selections.brands} 
+          brandsChanged={this.updateSelections('brands')} 
+        />
+      </div>
+    );
+  };
+}
+
+
+//非柯里化实现
+class Filters extends React.Component {
+  updateSelections = (selectionType, newValue) => {
+    this.props.selectionsChanged({
+      ...this.props.filterSelections,
+      [selectionType]: newValue, 
+    });
+  };
+
+  render() {
+    return (
+      <div>
+        <PriceFilter   
+          price={this.props.selections.price} 
+          priceChanged={(value) => this.updateSelections('price', value)} 
+        />
+        <AgeFilter 
+          ages={this.props.selections.ages} 
+          agesChanged={(value) => this.updateSelections('ages', value)} 
+        />
+        <BrandFilter 
+          brands={this.props.selections.brands} 
+          brandsChanged={(value) => this.updateSelections('brands', value)} 
+        />
+      </div>
+    );
+  };
+}
+```
 
 ## compose
 - 当函数纯化之后，有一个很鲜明的特点是，这个函数变的可以组合了。我们可以像堆积木一样，把各个我们要用的函数堆起来变成一个更大得函数体。
@@ -143,7 +220,7 @@ const loggerMiddleware = store => next => action => {
 ### 嵌套
 ```
 // 嵌套前　很清晰
-const f = x => x +1
+const f = x => x + 1
 const g = x => x + 2
 const h = x => x + 3
 //　嵌套后
@@ -182,22 +259,16 @@ redux compose源码:
  */
 export default function compose(...funcs) {
   if (funcs.length === 0) {
-
-    return arg => arg
+    return arg => arg；
   }
 
   if (funcs.length === 1) {
-    return funcs[0]
+    return funcs[0]；
   }
 
-  const last = funcs[funcs.length - 1]
-  const rest = funcs.slice(0, -1)
-  return (...args) => rest.reduceRight((composed, f) => f(composed), last(...args))
-}
-
-const demo = (composed, f) => {
-  f(composed);
-  return last(...args)
+  const last = funcs[funcs.length - 1]；
+  const rest = funcs.slice(0, -1)；
+  return (...args) => rest.reduceRight((composed, f) => f(composed), last(...args))；
 }
 
 compose(fn1, fn2, fn3)();
@@ -215,13 +286,13 @@ const fn = x => x + 1
 
 // es6
 const highOrderFn = x => y => {
-  console.log( y )
-  return x(y)
+  console.log(y);
+  return x(y);
 }
 
 // 调用
 var a = highOrderFn(fn)
-var b = a(2)() // 3
+var b = a(2)(); // 3
 
 ```
 
@@ -305,7 +376,7 @@ function Example() {
 #### State Hook
 - React 怎么知道 useState 对应的是哪个 state?
 - React 是如何把对 Hook 的调用和组件联系起来的？
-- 函数式更新
+- 函数式更新(与 class 组件中的 setState 方法不同，useState 不会自动合并更新对象。可以用函数式的 setState 结合展开运算符来达到合并更新对象的效果。或者使用 useReducer )
 
 使用 Hook 的示例:
 ```
@@ -329,7 +400,9 @@ function Example() {
 ```
 
 #### Effect Hook
+
 - 使用 Hook 的示例:
+
 ```
 import React, { useState, useEffect } from 'react';
 
@@ -355,12 +428,12 @@ function FriendStatus(props) {
 }
 ```
 
-- useEffect 做了什么？ 
 - 为什么在组件内部调用 useEffect？ 
 - useEffect 会在每次渲染后都执行吗？
-- 使用多个 Effect 实现关注点分离
 - effect 的执行时机
-- effect 的条件执行
+- effect 的条件执行（请确保数组中包含了所有外部作用域中会发生变化且在 effect 中使用的变量）
+- 使用多个 Effect 实现关注点分离（Hook 允许我们按照代码的用途分离他们，使用 Hook 其中一个目的就是要解决 class 中生命周期函数经常包含不相关的逻辑，但又把相关逻辑分离到了几个不同方法中的问题。）
+
 ```
 useEffect(
   () => {
@@ -393,7 +466,7 @@ function TextInputWithFocusButton() {
 
 #### useLayoutEffect
 其函数签名与 useEffect 相同，但它会在所有的 DOM 变更之后同步调用 effect。
-与　useEffect　区别:
+与 useEffect 区别:
 ```
 import React, { useEffect, useLayoutEffect, useRef } from "react";
 
@@ -444,7 +517,7 @@ const useForceUpdate = () => {
 ```
 
 #### getSnapshotBeforeUpdate
-hook不能直接替代这个生命周期，
+hook不能直接替代这个生命周期，可利用useLayoutEffect 和 useEffect 组合实现。
 
 #### componentDidMount, componentDidUpdate, componentWillUnmount
 useEffect Hook 可以表达所有这些的组合。
@@ -452,10 +525,9 @@ useEffect Hook 可以表达所有这些的组合。
 #### componentDidCatch, getDerivedStateFromError
 目前还未实现
 
-
-
 #### demo 
-1. 使用hook 获取数据
+- 使用hook 获取数据
+
 ```
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
