@@ -5,6 +5,7 @@
 - function-first-class
 - a brief encounter
 - pure-function
+- immutable
 - currying
 - compose
 - higher-order-function
@@ -100,7 +101,6 @@ const flockB = 2;
 const flockC = 0;
 const result =
     conjoin(breed(flockB, conjoin(flockA, flockC)), breed(flockA, flockB));
-// 16
 ```
 
 ## pure-function
@@ -122,7 +122,25 @@ function addPure(x){
 };
 ```
 
+## immutable
+在纯种的函数式编程语言中，数据是不可变的，或者说没有变量这个概念，所有的数据一旦产生，就不能改变其中的值，如果要改变，那就只能生成一个新的数据。
+
+```
+// 尽量不要使用push方法去修改一个数组
+const arr = [1, 2, 3];
+arr.push(4); //这样不好，看到这代码我就蒙圈了，需要从上往下琢磨一下arr到底存的是啥
+const newArr = [...arr, 4]; //这样，arr不会被修改，很放心，要修改过的版本用newArr就好了
+
+// 也不要直接去修改一个对象的字段
+const me = {name: 'Morgan'};
+me.skill = 'React'; //这样不好，拿不准me里是啥了
+const newMe = {...me, skill: 'React'}; //这样，me不会被修改
+```
+
 ## currying
+
+事实上柯里化是一种“预加载”函数的方法，通过传递较少的参数，得到一个已经记住了这些参数的新函数，某种意义上讲，这是一种对参数的“缓存”，是一种非常高效的编写函数的方法：
+
 ```
 // 柯里化
 function addPure(x){
@@ -344,6 +362,9 @@ const ConnectedComment = connect(commentSelector, commentActions)(CommentList);
 
 
 ## React世界的函数式编程
+```
+纯函数视图 > 不可变 > 单向数据流 > 单状态树（redux）> 中间件(middleware) > hooks > vdom diff > 时间切片 > 调度 > 异步渲染
+```
 ### redux
 参考之上
 
@@ -377,6 +398,13 @@ function Example() {
 - React 怎么知道 useState 对应的是哪个 state?
 - React 是如何把对 Hook 的调用和组件联系起来的？
 - 函数式更新(与 class 组件中的 setState 方法不同，useState 不会自动合并更新对象。可以用函数式的 setState 结合展开运算符来达到合并更新对象的效果。或者使用 useReducer )
+如:
+```
+setState(prevState => {
+  // 也可以使用 Object.assign
+  return {...prevState, ...updatedValues};
+});
+```
 
 使用 Hook 的示例:
 ```
@@ -388,9 +416,16 @@ function Example() {
   // const [fruit, setFruit] = useState('banana');
   // const [todos, setTodos] = useState([{ text: '学习 Hook' }]);
 
+  const [count, setCount] = useState(initialCount);
+
   return (
     <div>
       <p>You clicked {count} times</p>
+
+      <button onClick={() => setCount(initialCount)}>Reset</button>
+      <button onClick={() => setCount(prevCount => prevCount + 1)}>+</button>
+      <button onClick={() => setCount(prevCount => prevCount - 1)}>-</button>
+
       <button onClick={() => setCount(count + 1)}>
        Click me
      </button>
@@ -428,8 +463,15 @@ function FriendStatus(props) {
 }
 ```
 
-- 为什么在组件内部调用 useEffect？ 
+- 为什么在组件内部调用 useEffect？ 可以直接访问state或其他props变量.
 - useEffect 会在每次渲染后都执行吗？
+- 如何跳过 Effect 进行性能优化?
+举个在 componentDidUpdate 的例子:
+```
+useEffect(() => {
+  document.title = `You clicked ${count} times`;
+}, [count]); // 仅在 count 更改时更新
+```
 - effect 的执行时机
 - effect 的条件执行（请确保数组中包含了所有外部作用域中会发生变化且在 effect 中使用的变量）
 - 使用多个 Effect 实现关注点分离（Hook 允许我们按照代码的用途分离他们，使用 Hook 其中一个目的就是要解决 class 中生命周期函数经常包含不相关的逻辑，但又把相关逻辑分离到了几个不同方法中的问题。）
@@ -496,6 +538,22 @@ export default Animate;
 函数组件不需要构造函数。你可以通过调用 useState 来初始化 state。如果计算的代价比较昂贵，你可以传一个函数给 useState。
 
 #### getDerivedStateFromProps
+我们可以通过 新建一个 state 把preState保存起来,保持其在渲染期间的一次更新,如:
+```
+function ScrollView({row}) {
+  let [isScrollingDown, setIsScrollingDown] = useState(false);
+  let [prevRow, setPrevRow] = useState(null);
+
+  if (row !== prevRow) {
+    // Row 自上次渲染以来发生过改变。更新 isScrollingDown。
+    setIsScrollingDown(prevRow !== null && row > prevRow);
+    setPrevRow(row);
+  }
+
+  return `Scrolling down: ${isScrollingDown}`;
+}
+```
+
 
 #### shouldComponentUpdate
 ```
@@ -524,6 +582,9 @@ useEffect Hook 可以表达所有这些的组合。
 
 #### componentDidCatch, getDerivedStateFromError
 目前还未实现
+
+#### 引用一个函数组件
+通过 useImperativeHandle Hook 暴露一些命令式的方法给父组件.
 
 #### demo 
 - 使用hook 获取数据
