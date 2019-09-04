@@ -583,6 +583,9 @@ useEffect Hook 可以表达所有这些的组合。
 #### componentDidCatch, getDerivedStateFromError
 目前还未实现
 
+#### 能否使用静态类型
+比像高阶组件这样的模式更易于设定正确的类型。
+
 #### 引用一个函数组件
 通过 useImperativeHandle Hook 暴露一些命令式的方法给父组件.
 
@@ -629,6 +632,6 @@ ReactDOM.render(<SearchResults />, rootElement);
 ```
 
 ## 参考资料
-[https://github.com/MostlyAdequate/mostly-adequate-guide](https://github.com/MostlyAdequate/mostly-adequate-guide)
-[https://medium.com/@dan_abramov/making-sense-of-react-hooks-fdbde8803889](https://medium.com/@dan_abramov/making-sense-of-react-hooks-fdbde8803889)
-[https://reactjs.org/](https://reactjs.org/)
+- [https://github.com/MostlyAdequate/mostly-adequate-guide](https://github.com/MostlyAdequate/mostly-adequate-guide)
+- [https://medium.com/@dan_abramov/making-sense-of-react-hooks-fdbde8803889](https://medium.com/@dan_abramov/making-sense-of-react-hooks-fdbde8803889)
+- [https://reactjs.org/](https://reactjs.org/)
